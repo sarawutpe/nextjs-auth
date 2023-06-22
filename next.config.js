@@ -5,6 +5,9 @@ const nextConfig = {
       "876061349020-dlblh45sdlubuj9vdcoi0pdnp9lbknn5.apps.googleusercontent.com",
     googleSecret: "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",
   },
+  images: {
+    domains: ["robohash.org"],
+  },
 };
 
 module.exports = nextConfig;

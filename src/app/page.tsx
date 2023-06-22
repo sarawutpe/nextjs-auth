@@ -1,11 +1,99 @@
 "use client";
 
-import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 
-export default function Home() {
-  const { status } = useSession();
+export interface User {
+  users: UserData[];
+  total: number;
+  skip: number;
+  limit: number;
+}
+export interface UserData {
+  id: number;
+  firstName: string;
+  lastName: string;
+  maidenName: string;
+  age: number;
+  gender: string;
+  email: string;
+  phone: string;
+  username: string;
+  password: string;
+  birthDate: string;
+  image: string;
+  bloodGroup: string;
+  height: number;
+  weight: number;
+  eyeColor: string;
+  hair: Hair;
+  domain: string;
+  ip: string;
+  address: Address;
+  macAddress: string;
+  university: string;
+  bank: Bank;
+  company: Company;
+  ein: string;
+  ssn: string;
+  userAgent: string;
+}
+
+export interface Hair {
+  color: string;
+  type: string;
+}
+
+export interface Address {
+  address: string;
+  city: string;
+  coordinates: Coordinates;
+  postalCode: string;
+  state: string;
+}
+
+export interface Coordinates {
+  lat: number;
+  lng: number;
+}
+
+export interface Bank {
+  cardExpire: string;
+  cardNumber: string;
+  cardType: string;
+  currency: string;
+  iban: string;
+}
+
+export interface Company {
+  address: Address2;
+  department: string;
+  name: string;
+  title: string;
+}
+
+export interface Address2 {
+  address: string;
+  city?: string;
+  coordinates: Coordinates2;
+  postalCode: string;
+  state: string;
+}
+
+export interface Coordinates2 {
+  lat: number;
+  lng: number;
+}
+
+async function getData(): Promise<User> {
+  const res = await fetch("https://dummyjson.com/users");
+  return res.json();
+}
+
+export default async function Home() {
+  // const [count, setCount] = useState(0);
+
+  const user = await getData();
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
@@ -46,57 +134,74 @@ export default function Home() {
         />
       </div>
 
+      {/* Map Data */}
+      <div className="flex flex-wrap justify-center gap-2 max-w-3xl mt-10 mb-5">
+        {user.users.map((item) => (
+          <div key={item.id}>
+            <div className="w-[220px] flex items-center gap-4 p-4 border rounded-lg">
+              <Image
+                className="rounded-full"
+                src={item.image}
+                width={50}
+                height={50}
+                alt=""
+              />
+              <div className="flex flex-col overflow-hidden">
+                <strong className="text-slate-900 text-sm font-medium dark:text-slate-200 whitespace-nowrap text-ellipsis overflow-hidden">{`${item.firstName} ${item.lastName}`}</strong>
+                <span className="text-slate-500 text-sm font-medium dark:text-slate-400 whitespace-nowrap text-ellipsis overflow-hidden">
+                  {item.company.name}
+                </span>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
       <div className="mb-32 flex flex-wrap text-center lg:mb-0 lg:text-left">
-        {status === "unauthenticated" && (
-          <Link
-            className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800 hover:dark:bg-opacity-30"
-            href="/auth/signin"
-          >
-            <h2 className={`mb-3 text-2xl font-semibold`}>
-              Sign in{" "}
-              <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-                -&gt;
-              </span>
-            </h2>
-            <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-              Learn about Next.js in an interactive course with&nbsp;quizzes!
-            </p>
-          </Link>
-        )}
+        <Link
+          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800 hover:dark:bg-opacity-30"
+          href="/auth/signin"
+        >
+          <h2 className={`mb-3 text-2xl font-semibold`}>
+            Sign in{" "}
+            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
+              -&gt;
+            </span>
+          </h2>
+          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
+            Learn about Next.js in an interactive course with&nbsp;quizzes!
+          </p>
+        </Link>
 
-        {status === "unauthenticated" && (
-          <Link
-            className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800 hover:dark:bg-opacity-30"
-            href="/auth/signup"
-          >
-            <h2 className={`mb-3 text-2xl font-semibold`}>
-              Sign up{" "}
-              <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-                -&gt;
-              </span>
-            </h2>
-            <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-              Learn about Next.js in an interactive course with&nbsp;quizzes!
-            </p>
-          </Link>
-        )}
+        <Link
+          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800 hover:dark:bg-opacity-30"
+          href="/auth/signup"
+        >
+          <h2 className={`mb-3 text-2xl font-semibold`}>
+            Sign up{" "}
+            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
+              -&gt;
+            </span>
+          </h2>
+          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
+            Learn about Next.js in an interactive course with&nbsp;quizzes!
+          </p>
+        </Link>
 
-        {status === "authenticated" && (
-          <Link
-            className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800 hover:dark:bg-opacity-30"
-            href="/dashboard"
-          >
-            <h2 className={`mb-3 text-2xl font-semibold`}>
-              Go Dashboard{" "}
-              <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-                -&gt;
-              </span>
-            </h2>
-            <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-              Learn about Next.js in an interactive course with&nbsp;quizzes!
-            </p>
-          </Link>
-        )}
+        <Link
+          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800 hover:dark:bg-opacity-30"
+          href="/dashboard"
+        >
+          <h2 className={`mb-3 text-2xl font-semibold`}>
+            Go Dashboard{" "}
+            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
+              -&gt;
+            </span>
+          </h2>
+          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
+            Learn about Next.js in an interactive course with&nbsp;quizzes!
+          </p>
+        </Link>
       </div>
     </main>
   );
